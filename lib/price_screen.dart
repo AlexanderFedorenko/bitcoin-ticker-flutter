@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:bitcoin_ticker/coin_data.dart';
 import 'package:flutter/cupertino.dart';
+import 'coin_data.dart';
 import 'dart:io' show Platform;
 
 class PriceScreen extends StatefulWidget {
@@ -10,6 +10,46 @@ class PriceScreen extends StatefulWidget {
 
 class _PriceScreenState extends State<PriceScreen> {
   String selectedCurrency = 'USD';
+
+  DropdownButton<String> androidDropdown() {
+    return DropdownButton<String>(
+      value: selectedCurrency,
+      items: currenciesList.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          selectedCurrency = value;
+        });
+      },
+    );
+  }
+
+  CupertinoPicker iOSPicker() {
+    return CupertinoPicker(
+      backgroundColor: Colors.lightBlue,
+      itemExtent: 32.0,
+      onSelectedItemChanged: (value) {
+        setState(() {
+          selectedCurrency = currenciesList[value];
+        });
+      },
+      children: currenciesList.map((String value) {
+        return Text(value);
+      }).toList(),
+    );
+  }
+
+  //TODO: Create a method here called getData() to get the coin data from coin_data.dart
+
+  @override
+  void initState() {
+    super.initState();
+    //TODO: Call getData() when the screen loads up.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,17 +67,14 @@ class _PriceScreenState extends State<PriceScreen> {
               color: Colors.lightBlueAccent,
               elevation: 5.0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
+                  borderRadius: BorderRadius.circular(10.0)),
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
+                  //TODO: Update the Text Widget with the live bitcoin data here.
                   '1 BTC = ? USD',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
               ),
             ),
@@ -47,35 +84,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: Platform.isIOS
-                ? CupertinoPicker(
-                    backgroundColor: Colors.lightBlue,
-                    itemExtent: 32.0,
-                    onSelectedItemChanged: (value) {
-                      setState(() {
-                        selectedCurrency = currenciesList[value];
-                        print(selectedCurrency);
-                      });
-                    },
-                    children: currenciesList.map((String value) {
-                      return Text(value);
-                    }).toList(),
-                  )
-                : DropdownButton<String>(
-                    value: selectedCurrency,
-                    items: currenciesList
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedCurrency = value;
-                      });
-                    },
-                  ),
+            child: Platform.isIOS ? iOSPicker() : androidDropdown(),
           ),
         ],
       ),
