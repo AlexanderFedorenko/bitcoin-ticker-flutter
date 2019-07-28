@@ -37,8 +37,8 @@ const bitcoinAverageURL =
 class CoinData {
   var lastPrice;
 
-  Future getCoinData() async {
-    http.Response response = await http.get('$bitcoinAverageURL/BTCUSD');
+  Future getCoinData(String currency) async {
+    http.Response response = await http.get('$bitcoinAverageURL/BTC$currency');
 
     if (response.statusCode == 200) {
       var decodedData = jsonDecode(response.body);

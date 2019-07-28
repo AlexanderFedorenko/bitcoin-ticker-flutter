@@ -24,6 +24,7 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           selectedCurrency = value;
         });
+        getData();
       },
     );
   }
@@ -36,6 +37,7 @@ class _PriceScreenState extends State<PriceScreen> {
         setState(() {
           selectedCurrency = currenciesList[value];
         });
+        getData();
       },
       children: currenciesList.map((String value) {
         return Text(value);
@@ -47,8 +49,9 @@ class _PriceScreenState extends State<PriceScreen> {
   var coinData = CoinData();
 
   Future<dynamic> getData() async {
+    coinDataLast = '?';
     try {
-      double data = await coinData.getCoinData();
+      double data = await coinData.getCoinData(selectedCurrency);
       setState(() {
         coinDataLast = data.toStringAsFixed(0);
       });
@@ -83,8 +86,7 @@ class _PriceScreenState extends State<PriceScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
                 child: Text(
-                  //TODO: Update the Text Widget with the live bitcoin data here.
-                  '1 BTC = $coinDataLast USD',
+                  '1 BTC = $coinDataLast $selectedCurrency',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20.0, color: Colors.white),
                 ),
